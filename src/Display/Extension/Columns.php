@@ -2,11 +2,11 @@
 
 namespace SleepingOwl\Admin\Display\Extension;
 
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Renderable;
-use SleepingOwl\Admin\Display\Column\Control;
-use SleepingOwl\Admin\Contracts\Initializable;
+use Illuminate\Support\Collection;
 use SleepingOwl\Admin\Contracts\ColumnInterface;
+use SleepingOwl\Admin\Contracts\Initializable;
+use SleepingOwl\Admin\Display\Column\Control;
 
 class Columns extends Extension implements Initializable, Renderable
 {
@@ -165,6 +165,15 @@ class Columns extends Extension implements Initializable, Renderable
         $this->all()->each(function (ColumnInterface $column) {
             $column->initialize();
         });
+    }
+    
+    public function modifyQuery(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        foreach ($this->all() as $column) {
+            if ($column->getHeader()->isOrdered()) {
+                $query->orderBy($column->getName(), $column->getHeader()->getDirection());
+            }
+        }
     }
 
     /**

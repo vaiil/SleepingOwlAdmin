@@ -53,7 +53,7 @@ abstract class TableColumn implements ColumnInterface
      */
     public function __construct($label = null)
     {
-        $this->header = app(TableHeaderColumnInterface::class);
+        $this->header = app(TableHeaderColumnInterface::class, [$this]);
 
         if (! is_null($label)) {
             $this->setLabel($label);
